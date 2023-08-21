@@ -3,7 +3,6 @@ name: Deployment pipeline
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  SKIP: ${{ contains(join(github.event.commits.*.message,', '),'#skip') }}
 
 on:
   push:
@@ -35,20 +34,20 @@ jobs:
           start: npm run start-prod
           browser: chrome
       - name: install Vercel CLI
-        if: ${{ github.event_name == 'push' && !env.SKIP }}
+        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message,', '),'#skip') }}
         run: npm install --global vercel@latest
       - name: pull Vercel Environment Information
-        if: ${{ github.event_name == 'push' && !env.SKIP }}
+        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message,', '),'#skip') }}
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - name: build project
-        if: ${{ github.event_name == 'push' && !env.SKIP }}
+        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message,', '),'#skip') }}
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: deploy project to Vercel
-        if: ${{ github.event_name == 'push' && !env.SKIP }}
+        if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message,', '),'#skip') }}
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
   tag_release:
     needs: [simple_deployment_pipeline]
-    if: ${{ github.event_name == 'push' && !env.SKIP }}
+    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message,', '),'#skip') }}
     runs-on: ubuntu-20.04
     steps:
       - name: Bump version and push tag
