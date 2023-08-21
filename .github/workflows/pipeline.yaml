@@ -26,11 +26,11 @@ jobs:
       - name: test
         run: npm test
       - name: e2e test
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
-          command: npm run test:e2e
+          build: npm run build
           start: npm run start-prod
-          wait-on: http://localhost:5000
+          browser: chrome
       - name: install Vercel CLI
         run: npm install --global vercel@latest
       - name: pull Vercel Environment Information
