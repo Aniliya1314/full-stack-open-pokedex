@@ -34,7 +34,7 @@ jobs:
           start: npm run start-prod
           browser: chrome
       - name: install Vercel CLI
-        if: ${{ github.event_name === 'push' }}
+        if: ${{ github.event_name == 'push' }}
         run: npm install --global vercel@latest
       - name: pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
